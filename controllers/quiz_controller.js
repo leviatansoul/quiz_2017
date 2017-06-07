@@ -303,7 +303,7 @@ exports.random_result = function (req, res, next) {
         req.session.correctAnswersIds = []
 
         res.render('quizzes/random_result.ejs', {
-            score: score,
+            score: 0,
             result: false,
             answer: answer
         });
