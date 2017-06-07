@@ -187,3 +187,135 @@ exports.check = function (req, res, next) {
         answer: answer
     });
 };
+
+// Funciones accesorias
+
+function getRandomInt(minInc, maxInc) {
+    return Math.floor(Math.random() * (maxInc - minInc + 1)) + minInc;
+}
+
+function arrayDiff (a, b) {
+    return a.filter(function(i) {return b.indexOf(i) < 0;});
+}
+
+function getRandomUnansweredId (allIds, answeredIds){
+    var unansweredIds = arrayDiff(allIds, answeredIds);
+    return unansweredIds[getRandomInt(0, unansweredIds.length -1)];
+}
+
+
+
+// GET + /quizzes/randomplay
+exports.randomplay = function (req, res, next) {
+
+    var countOptions = {};
+
+    // Busquedas:
+    var search = req.query.search || '';
+    if (search) {
+        var search_like = "%" + search.replace(/ +/g,"%") + "%";
+        countOptions.where = {question: { $like: search_like }};
+    }
+
+    models.Quiz.count(countOptions)
+    .then(function (count) {
+        return models.Quiz.findAll();
+    })
+    .then(function (quizzes) {
+
+        var allIds = quizzes.map(function(quiz){return quiz.id;});
+
+        if (req.session.correctAnswersIds == undefined ) {
+            req.session.correctAnswersIds = [];
+        }
+
+        var correctAnsweredQuestions = req.session.correctAnswersIds;
+        var score = correctAnsweredQuestions.length
+
+        var randomUnansweredId = getRandomUnansweredId(allIds, correctAnsweredQuestions)
+
+        // Si hemos respondido a todo bien...
+        if (randomUnansweredId == undefined) {
+
+            // Reseteamos la puntuación por si quieren volver a jugar:
+            req.session.correctAnswersIds = [];
+
+            // Renderizamos la página que dice que no hay más preguntas
+            res.render('quizzes/random_nomore.ejs', {score: score})
+
+        // Si quedan cosas por contestar...
+        } else {
+            var quiz = quizzes[allIds.indexOf(randomUnansweredId)]
+
+            res.render('quizzes/random_play.ejs', {
+                quiz: quiz,
+                score: score
+            });
+        }
+    })
+    .catch(function (error) {
+        next(error);
+    });
+};
+
+// GET + /quizzes/randomcheck/:quizId?answer=respuesta
+exports.random_result = function (req, res, next) {
+
+    // Sacamos la respuesta que nos han mandado
+    var answer = req.query.answer;
+
+    // Elegimos el quiz con quizId
+    var quiz = req.quiz;
+
+    // Sacamos su respuesta
+    var expectedAnswer = quiz.answer
+
+    // Si la respuesta coincide con la de los parámetros, añadimos esa respuesta
+    // a su lista de contestadas y lo renderizamos en positivo
+    var result = answer.toLowerCase().trim() === expectedAnswer.toLowerCase().trim();
+    if (result) {
+        if (req.session.correctAnswersIds == undefined ) {
+            req.session.correctAnswersIds = [quiz.id];
+        } else {
+            req.session.correctAnswersIds.push(quiz.id);
+        }
+
+        var score = req.session.correctAnswersIds.length;
+
+        res.render('quizzes/random_result.ejs', {
+            score: score,
+            result: true,
+            answer: answer
+        });
+
+    // Si la respuesta no coincide, lo renderizamos en negativo y ya
+    } else {
+
+        var score;
+        if (req.session.correctAnswersIds == undefined ) {
+            score = 0;
+        } else {
+            score = req.session.correctAnswersIds.length;
+        }
+
+        // Reseteamos el número de respuestas acertadas, porque es un requisito
+        // que éstas se acierten consecutivamente
+        req.session.correctAnswersIds = []
+
+        res.render('quizzes/random_result.ejs', {
+            score: score,
+            result: false,
+            answer: answer
+        });
+    }
+};
+
+
+
+
+
+
+
+
+
+
