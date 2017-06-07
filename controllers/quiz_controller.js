@@ -6,7 +6,12 @@ var paginate = require('../helpers/paginate').paginate;
 // Autoload el quiz asociado a :quizId
 exports.load = function (req, res, next, quizId) {
 
-    models.Quiz.findById(quizId)
+    models.Quiz.findById(quizId, {
+        include: [
+            {model: models.Tip, include: [{model: models.User, as: 'Author'}]},
+            {model: models.User, as: 'Author'}
+        ]
+    })
     .then(function (quiz) {
         if (quiz) {
             req.quiz = quiz;
@@ -21,17 +26,42 @@ exports.load = function (req, res, next, quizId) {
 };
 
 
+// MW que permite acciones solamente si al usuario logeado es admin o es el autor del quiz.
+exports.adminOrAuthorRequired = function(req, res, next){
+
+    var isAdmin  = req.session.user.isAdmin;
+    var isAuthor = req.quiz.AuthorId === req.session.user.id;
+
+    if (isAdmin || isAuthor) {
+        next();
+    } else {
+        console.log('Operación prohibida: El usuario logeado no es el autor del quiz, ni un administrador.');
+        res.send(403);
+    }
+};
+
+
 // GET /quizzes
 exports.index = function (req, res, next) {
 
-    var countOptions = {};
+    var countOptions = {
+        where: {}
+    };
+
+    var title = "Preguntas";
 
     // Busquedas:
     var search = req.query.search || '';
     if (search) {
         var search_like = "%" + search.replace(/ +/g,"%") + "%";
 
-        countOptions.where = {question: { $like: search_like }};
+        countOptions.where.question = { $like: search_like };
+    }
+
+    // Si existe req.user, mostrar solo sus preguntas.
+    if (req.user) {
+        countOptions.where.AuthorId = req.user.id;
+        title = "Preguntas de " + req.user.username;
     }
 
     models.Quiz.count(countOptions)
@@ -52,13 +82,15 @@ exports.index = function (req, res, next) {
 
         findOptions.offset = items_per_page * (pageno - 1);
         findOptions.limit = items_per_page;
+        findOptions.include = [{model: models.User, as: 'Author'}];
 
         return models.Quiz.findAll(findOptions);
     })
     .then(function (quizzes) {
         res.render('quizzes/index.ejs', {
             quizzes: quizzes,
-            search: search
+            search: search,
+            title: title
         });
     })
     .catch(function (error) {
@@ -86,13 +118,16 @@ exports.new = function (req, res, next) {
 // POST /quizzes/create
 exports.create = function (req, res, next) {
 
+    var authorId = req.session.user && req.session.user.id || 0;
+
     var quiz = models.Quiz.build({
         question: req.body.question,
-        answer: req.body.answer
+        answer: req.body.answer,
+        AuthorId: authorId
     });
 
     // guarda en DB los campos pregunta y respuesta de quiz
-    quiz.save({fields: ["question", "answer"]})
+    quiz.save({fields: ["question", "answer", "AuthorId"]})
     .then(function (quiz) {
         req.flash('success', 'Quiz creado con éxito.');
         res.redirect('/quizzes/' + quiz.id);
@@ -153,7 +188,7 @@ exports.destroy = function (req, res, next) {
     req.quiz.destroy()
     .then(function () {
         req.flash('success', 'Quiz borrado con éxito.');
-        res.redirect('/quizzes');
+        res.redirect('/goback');
     })
     .catch(function (error) {
         req.flash('error', 'Error al editar el Quiz: ' + error.message);
