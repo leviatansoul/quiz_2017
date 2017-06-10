@@ -33,6 +33,9 @@ var Tip = sequelize.import(path.join(__dirname,'tip'));
 // Importar la definicion de la tabla Users de user.js
 var User = sequelize.import(path.join(__dirname,'user'));
 
+// Importar la definicion de la tabla Users de user.js
+var DailyMessage = sequelize.import(path.join(__dirname,'daily-message'));
+
 
 // Relaciones entre modelos
 Tip.belongsTo(Quiz);
@@ -50,3 +53,4 @@ Tip.belongsTo(User, {as: 'Author', foreignKey: 'AuthorId'});
 exports.Quiz = Quiz; // exportar definición de tabla Quiz
 exports.Tip = Tip;   // exportar definición de tabla Tips
 exports.User = User; // exportar definición de tabla Users
+exports.DailyMessage = DailyMessage; //exportar tabla daily message

@@ -5,7 +5,7 @@ var quizController = require('../controllers/quiz_controller');
 var tipController = require('../controllers/tip_controller');
 var userController = require('../controllers/user_controller');
 var sessionController = require('../controllers/session_controller');
-
+var dailyMessageController = require("../controllers/dailymessage_controller");
 //-----------------------------------------------------------
 
 // autologout
@@ -37,9 +37,7 @@ router.get(/(?!\/new$|\/edit$|\/play$|\/check$|\/session$|\/(\d+)$)\/[^\/]*$/, f
 //-----------------------------------------------------------
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-    res.render('index');
-});
+router.get('/',dailyMessageController.get);
 
 // Pagina de creditos
 router.get('/author', function (req, res, next) {
