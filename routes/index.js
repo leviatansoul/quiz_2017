@@ -37,7 +37,10 @@ router.get(/(?!\/new$|\/edit$|\/play$|\/check$|\/session$|\/(\d+)$)\/[^\/]*$/, f
 //-----------------------------------------------------------
 
 /* GET home page. */
-router.get('/',dailyMessageController.get);
+router.get('/',/* dailyMessageController.get,*/
+    function (req, res, next) {
+        res.render('index');
+    });
 
 // Pagina de creditos
 router.get('/author', function (req, res, next) {
