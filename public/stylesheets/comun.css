@@ -1,0 +1,72 @@
+#mainHeader{
+    background:  linear-gradient(to left, rgba(38, 111, 110, 0.95), rgba(34, 48, 148, 0.95));
+    font-family: Anton;
+    text-transform: uppercase;
+    color: white;
+
+
+}
+
+
+body {
+    font-family: Lato;
+    background: white;
+    background-image: url("../images/rallado.jpg");
+    background-attachment: fixed;
+    background-size: 200px;
+
+}
+
+.right{
+    padding: 20px;
+}
+
+
+
+#mainNav> a{
+    text-decoration: none;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size: 15pt;
+    height: 40px;
+     background: rgba(34, 48, 148,0.9);
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+
+
+}
+
+#mainNav> a:hover{
+
+    background: rgba(38, 111, 110,0.9);
+}
+
+.container{
+    color: white;
+    border: dashed white 4px;
+    background:  linear-gradient(to left, rgba(141 , 56, 75, 0.9), rgba(34, 48, 148, 0.9));
+    text-align: center;
+}
+
+#mainNav{
+
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.right > a{
+    text-decoration: none;
+    color: white;
+}
+
+.right > a:hover{
+    text-decoration: underline;
+}
+
+footer{
+    border-color: black;
+    background-color: black;
+}

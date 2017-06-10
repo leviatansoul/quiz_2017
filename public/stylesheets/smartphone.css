@@ -7,10 +7,21 @@ body {
     font-size: x-large;
 }
 
-#page:after {
+#mainFooter:after {
     content: "Smartphone Layout";
+    color: white;
 }
 
 .no-narrow {
     display: none;
+}
+
+footer{
+    border-color: black;
+    background-color: black;
+}
+
+
+#page{
+margin: 0;
 }

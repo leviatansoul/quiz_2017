@@ -1,4 +1,36 @@
-<h1>Bienvenido a Quiz</h1>
+<h1 style="font-size: 32pt">BIENVENIDO A QUIZ</h1>
 
 <p>El portal donde podrá crear sus propios juegos!</p>
+<br>
+<div class="container">
+    <p>ESTE ES EL COMENTARIO DEL DIA</p>
+    <div class="daily-message" style="font-size: 40pt"></div>
+    <br>
+</div>
+<br>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script src="/js/dailyMessages.js"></script>
+
+<script>
+
+    $('.daily-message').dailyMessages({
+        monday: "Case of the Mondays?",
+        tuesday: "I know it's only Tuesday, but you can do it! ",
+        wednesday: "Hump day baby!",
+        thursday: "We all know Thursday is the new Friday.",
+        friday: "Thank God! We made it. Happy Friday folks!",
+        saturday: "It's Saturday fool! Stop using the Internets and go outside!",
+        sunday: "NFL Sunday! Or maybe some Netflix? Chill.",
+        success: function() {
+            console.log('It worked!');
+        },
+        error: function(message) {
+            console.log(message);
+            $(this).remove();
+        }
+    });
+
+</script>
 

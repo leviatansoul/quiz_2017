@@ -13,25 +13,32 @@
           type='text/css'
           media='only screen and (max-width: 480px)'
           href='/stylesheets/smartphone.css'/>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/comun.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
 </head>
 <body>
 <div id="page">
 
     <header class="main" id="mainHeader">
-
-        <div class="right">
+        <br>
+        <div class="right" >
             <% if (!session.user) { %>
-                <a href="/users/new">Registrarse</a>
-                <a href="/session">Login</a>
+                <a href="/users/new">Registrarse </a>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <a href="/session">Login</a>
             <% } else { %>
                 <a href="/users/<%= session.user.id %>"><%= session.user.username %></a>
-                <a href="/session?_method=DELETE">Logout</a>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <a href="/session?_method=DELETE">Logout</a>
             <% } %>
         </div>
 
         <h1>Quiz<span class="no-narrow">: el juego de las preguntas</span></h1>
+        <br>
     </header>
-
     <nav class="main" id="mainNav" role="navigation">
         <a href="/">Inicio</a>
         <a href="/quizzes">Preguntas</a>
@@ -51,10 +58,19 @@
             <%- body %>
     </section>
 
+
+
     <footer class="main" id="mainFooter">
+        <br><br>
         <a href="http://es.wikipedia.org/wiki/Quiz">
             ¿Qué es un Quiz?</a>
+        <br><br><br>
     </footer>
 </div>
 </body>
+
+<script >
+
+
+</script>
 </html>

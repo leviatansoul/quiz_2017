@@ -1,11 +1,19 @@
 body {
-    background: #999;
+    background: white;
+    background-image: url("../images/rallado.jpg");
+    background-attachment: fixed;
+    background-size: 200px;
+
 }
 
-#page:after {
+
+#mainFooter:after {
     color: white;
     content: "Wide Layout";
 }
+
+
+
 
 #mainNav {
     flex: 0 auto;
@@ -20,5 +28,27 @@ body {
     flex: 1;
     overflow: auto;
 }
+
+#mainFooter{
+    background: black;
+}
+
+#page{
+    margin-left: 8%;
+    margin-right: 8%;
+    margin-top: 50px;
+
+}
+
+#mainHeader{
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+
+#mainNav > a{
+    padding-top: 15px;
+}
+
 
 
